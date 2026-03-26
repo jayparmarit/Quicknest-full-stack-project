@@ -41,22 +41,20 @@ userSchema.pre("save", async function(){
 });
 
 userSchema.statics.findByCredentials = async function (email, password) {
-    try {
-        const user = await this.findOne({email})
-        if(!user){
-            throw new Error("unable to login")
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
+  const user = await this.findOne({ email });
 
-        if(!isMatch){
-            throw new Error("unable to login")
-        }
-        return user;
+  if (!user) {
+    throw new Error("Invalid email");
+  }
 
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new Error("Invalid password");
+  }
+
+  return user;
+};
 
 const User = mongoose.model("user", userSchema)
 

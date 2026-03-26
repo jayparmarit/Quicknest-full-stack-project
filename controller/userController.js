@@ -23,4 +23,22 @@ const add = async (req, res, next)=>{
     }
 }
 
-export default {add};
+const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findByCredentials(email, password);
+
+    res.status(200).json({
+      success: true,
+      message: "user login successfully",
+      user,
+    });
+
+  } catch (error) {
+    console.error(error.message); 
+    next(new HttpsError(error.message, 400));
+  }
+};
+
+export default { add, loginUser};
