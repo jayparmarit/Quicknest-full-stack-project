@@ -29,6 +29,12 @@ const loginUser = async (req, res, next) => {
 
     const user = await User.findByCredentials(email, password);
 
+    if(!user){
+      next (new HttpsError("unable to login"))
+    }
+
+    const token = await user.generateAuthToken();
+
     res.status(200).json({
       success: true,
       message: "user login successfully",
@@ -41,4 +47,20 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-export default { add, loginUser};
+const authLogin = async (req, res, next)=>{
+  try{
+
+    const user = req.user;
+
+    if(!user){
+      return next(new HttpsError("unable to login",401))
+    }
+
+    res.status(200).json({ success: true, user})
+
+  }catch(error){
+    next(new HttpsError(error.message,500))
+  }
+}
+
+export default { add, loginUser, authLogin};

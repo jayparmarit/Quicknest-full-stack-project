@@ -1,7 +1,7 @@
-
+import Joi from "joi";
 import HttpsError from "./HttpError.js";
 
-const validate = (schema) => () => {
+const validate = (schema) => (req, res, next) => {
     try {
         const { error, value } = schema.validate(req.body,{
             abortEarly:true,
@@ -10,7 +10,7 @@ const validate = (schema) => () => {
         });
 
         if(error){
-            return next(new HttpsError(error.details[0].message,400));
+             next(new HttpsError(error.details[0].message,400));
         }
         req.body = value;
 
