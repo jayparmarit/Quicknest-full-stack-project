@@ -1,15 +1,46 @@
-import express from "express"
+import express from "express";
 
 import userController from "../controller/userController.js";
 import validate from "../middleware/validate.js";
-import registerSchema from "../validation/registerSchema.js";
-import auth from "../middleware/auth.js"
+import auth from "../middleware/auth.js";
+import CheckRole from "../middleware/CheckRole.js";
+import uploads from "../middleware/upload.js";
+import {
+  createUserSchema,
+  updateUserSchema,
+} from "../validation/userSchema.js";
 
 const router = express.Router();
 
-router.post("/addUser",validate(registerSchema), userController.add)
-router.post("/loginUser",userController.loginUser)
-router.get("/authLogin", auth, userController.authLogin)
+router.post(
+  "/add",
+  validate(createUserSchema),
+  uploads.single("profilePic"),
+  userController.add,
+);
 
-export default router
+router.post("/login", userController.login);
 
+router.get("/authLogin", auth, userController.authLogin);
+
+router.post("/logOut", auth, userController.logOut);
+
+router.post("/logOutAll", auth, userController.logOutAll);
+
+router.get(
+  "/allUser",
+  auth,
+  CheckRole("admin", "super_admin"),
+  userController.allUser,
+);
+
+router.patch(
+  "/update",
+  auth,
+  validate(updateUserSchema),
+  userController.update,
+);
+
+router.delete("/delete", auth, userController.deleteUser);
+
+export default router;
