@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
+dotenv.config({path:"./.env"})
 
 import express from "express";
 
@@ -17,7 +17,7 @@ app.use("/user", userRouter);
 app.use("/admin", AdminRouter);
 
 app.get("/", (req, res) => {
-  res.json("hello from server");
+  res.json("hello from server start");
 });
 
 app.use((req, res, next) => {
