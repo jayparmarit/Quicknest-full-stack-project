@@ -1,3 +1,5 @@
+import Joi from "joi";
+
 import HttpError from "./HttpError.js";
 
 const validate = (schema) => (req, res, next) => {
@@ -9,10 +11,12 @@ const validate = (schema) => (req, res, next) => {
     });
 
     if (error) {
-      return next(new HttpError(error.details[0].message, 400));
+      next(new HttpError(error.details[0].message, 400));
     }
+
+    req.body = value;
+
     next();
-    return value;
   } catch (error) {
     throw new Error(error.message);
   }

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const userSchema = new mongoose.Schema(
+const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["customer", "provider", "admin", "super_admin"],
+      enum: ["customer", "provider", "admin", "super-admin"],
       default: "customer",
     },
     profilePic: {
@@ -46,16 +47,12 @@ const userSchema = new mongoose.Schema(
       },
     ],
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 );
 
 userSchema.pre("save", async function () {
-  const user = this;
-
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8);
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 8);
   }
 });
 
@@ -64,18 +61,18 @@ userSchema.statics.findByCredentials = async function (email, password) {
     const user = await this.findOne({ email });
 
     if (!user) {
-      throw new Error("unable to login");
+      throw new Error("Unable to login");
     }
 
-    const isMatched = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatched) {
-      throw new Error("unable to login");
+    if (!isMatch) {
+      throw new Error("Unable to login");
     }
 
     return user;
   } catch (error) {
-    console.log(error);
+    throw new Error(error.message);
   }
 };
 
@@ -84,15 +81,13 @@ userSchema.methods.generateAuthToken = async function () {
     const user = this;
 
     const token = jwt.sign(
-      {
-        _id: user._id.toString(),
-        role: user.role,
-      },
+      { _id: user._id.toString() },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      },
     );
+
+    if (!token) {
+      throw new Error("Failed to generate auth token");
+    }
 
     user.tokens = user.tokens.concat({ token });
 
@@ -111,13 +106,13 @@ userSchema.methods.toJSON = function () {
 
   delete userObject.password;
 
+  delete userObject.tokens;
+
   delete userObject.createdAt;
 
   delete userObject.updatedAt;
 
   delete userObject.__v;
-
-  delete userObject.tokens;
 
   return userObject;
 };

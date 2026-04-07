@@ -2,20 +2,20 @@ import express from "express";
 
 import userController from "../controller/userController.js";
 import validate from "../middleware/validate.js";
-import auth from "../middleware/auth.js";
-import CheckRole from "../middleware/CheckRole.js";
-import uploads from "../middleware/upload.js";
 import {
   createUserSchema,
   updateUserSchema,
 } from "../validation/userSchema.js";
+import auth from "../middleware/auth.js";
+import uploads from "../middleware/upload.js";
+import checkRole from "../middleware/checkRole.js";
 
 const router = express.Router();
 
 router.post(
   "/add",
-  validate(createUserSchema),
   uploads.single("profilePic"),
+  validate(createUserSchema),
   userController.add,
 );
 
@@ -28,16 +28,16 @@ router.post("/logOut", auth, userController.logOut);
 router.post("/logOutAll", auth, userController.logOutAll);
 
 router.get(
-  "/allUser",
+  "/getAll",
   auth,
-  CheckRole("admin", "super_admin"),
-  userController.allUser,
+  checkRole("admin", "super_admin"),
+  userController.getAll,
 );
 
 router.patch(
   "/update",
+  uploads.single("profilePic"),
   auth,
-  validate(updateUserSchema),
   userController.update,
 );
 
