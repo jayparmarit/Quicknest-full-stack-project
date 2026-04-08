@@ -1,23 +1,54 @@
 import express from "express";
 
 import auth from "../middleware/auth.js";
-import CheckRole from "../middleware/CheckRole.js";
-import AdminController from "../controller/AdminController.js";
+import checkRole from "../middleware/checkRole.js";
+import validate from "../middleware/validate.js";
+
+import categorySchema from "../validation/categorySchema.js";
+
+import userController from "../controller/userController.js";
+import categoryController from "../controller/categoryController.js";
+import serviceController from "../controller/serviceController.js";
 
 const router = express.Router();
+
+router.get(
+  "/allUser",
+  auth,
+  checkRole("admin", "super_admin"),
+  userController.allUser,
+);
 
 router.patch(
   "/update/:id",
   auth,
-  CheckRole("admin", "super_admin"),
-  AdminController.updateUserData,
+  checkRole("admin", "super_admin"),
+  userController.update,
 );
 
 router.delete(
   "/delete/:id",
   auth,
-  CheckRole("admin", "super_admin"),
-  AdminController.deleteUser,
+  checkRole("admin", "super_admin"),
+  userController.deleteUser,
+);
+
+
+
+router.post(
+  "/addCategory",
+  auth,
+  validate(categorySchema),
+  checkRole("admin", "super_admin"),
+  categoryController.add,
+);
+
+
+router.post(
+  "/addService",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.add,
 );
 
 export default router;

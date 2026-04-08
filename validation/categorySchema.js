@@ -1,28 +1,14 @@
 import Joi from "joi";
 
 const categorySchema = Joi.object({
-  name: Joi.string().trim().min(2).label("name").messages({
-    "string.base": "name must be in string",
-    "string.empty": "name is required",
-    "string.min": "name must be greater than 2 characters",
+  name: Joi.string().min(2).trim().required().messages({
+    "string.base": "category name must be string",
+    "string.min": "category name must be  atleast 2 character",
+    "any.required": "category name must be required",
   }),
-
-  description: Joi.string().trim().label("description").messages({
-    "string.base": "description must be in string",
+  description: Joi.string().allow("").messages({
+    "string.base": "description must be in string format",
   }),
 });
 
-// CREATE (all required)
-export const createCategorySchema = categorySchema
-  .fork(["name", "description"], (field) => field.required())
-  .messages({
-    "any.required": "{#label} is required",
-  });
-
-// UPDATE (all optional BUT at least one required)
-export const updateCategorySchema = categorySchema
-  .fork(["name", "description"], (field) => field.optional())
-  .or("name", "description")
-  .messages({
-    "object.missing": "At least one field (name or description) is required",
-  });
+export default categorySchema;
