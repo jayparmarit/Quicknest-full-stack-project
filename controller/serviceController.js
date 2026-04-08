@@ -1,24 +1,38 @@
-import HttpError from "../middleware/HttpError.js";
+import Category from "../model/Category.js";
+import Service from "../model/Services.js";
 
-import Service from "../model/Service.js";
+import HttpError from "../middleware/HttpError.js";
 
 const add = async (req, res, next) => {
   try {
-    const { title, price, description, duration, isActive } = req.body;
+    const { name, price, duration, description, isActive, category } = req.body;
 
-    const newService = Service.create({
-      title,
+    const existingService = await Service.findOne({ name });
+
+    if (existingService) {
+      return next(new HttpError("service is already exist", 500));
+    }
+
+    const existingCategory = await Category.findById(category);
+
+    if (!existingCategory) {
+      return next(new HttpError("category not existed", 500));
+    }
+
+    const newService = new Service({
+      name,
       price,
-      description,
       duration,
+      description,
       isActive,
+      category,
     });
 
     await newService.save();
 
     res
       .status(201)
-      .json({ success: true, message: "service add successfully", newService });
+      .json({ success: true, message: "new service created", newService });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }

@@ -5,14 +5,16 @@ const categorySchema = new mongoose.Schema(
     name: {
       type: String,
       unique: true,
-      required: true,
       trim: true,
+      required: true,
     },
     description: {
       type: String,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 const Category = mongoose.model("Category", categorySchema);
