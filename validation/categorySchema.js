@@ -11,4 +11,7 @@ const categorySchema = Joi.object({
   }),
 });
 
-export default categorySchema;
+// CREATE 
+
+
+export const createCategorySchema = categorySchema;
