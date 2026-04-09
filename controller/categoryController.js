@@ -1,6 +1,6 @@
 import HttpError from "../middleware/HttpError.js";
 
-import category from "../model/Category.js"
+import Category from "../model/Category.js"
 
 const add = async (req, res, next) => {
   try {
