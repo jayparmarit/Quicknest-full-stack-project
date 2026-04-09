@@ -62,7 +62,7 @@ const authLogin = async (req, res, next) => {
 
 const logOut = async (req, res, next) => {
   try {
-    const token = req.token;
+    // const token = req.token;
     req.user.tokens = req.user.tokens.filter((t) => {
       return t.token != req.token;
     });
