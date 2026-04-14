@@ -13,7 +13,6 @@ const categorySchema = Joi.object({
   }),
 });
 
-// CREATE 
 
 
 export const createCategorySchema = categorySchema.fork(
