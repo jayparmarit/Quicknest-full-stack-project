@@ -33,6 +33,7 @@ router.delete(
   userController.deleteUser,
 );
 
+// <---------------category---------->
 
 
 router.post(
@@ -42,6 +43,9 @@ router.post(
   checkRole("admin", "super_admin"),
   categoryController.add,
 );
+
+
+// <---------------service---------->
 
 
 router.post(
