@@ -29,4 +29,3 @@ export const updateCategorySchema = categorySchema.fork(
   "object.missing":"name or description any of these field is required when updating",
 });
 
-export default createCategorySchema

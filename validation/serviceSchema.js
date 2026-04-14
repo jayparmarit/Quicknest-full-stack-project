@@ -32,7 +32,7 @@ export const createServiceSchema = ServiceSchema.fork(
     "any.required":"{#label} is required",
 });
 
-export const updateServiceSchema = ServiceSchema.form(
+export const updateServiceSchema = ServiceSchema.fork(
     ["name", "price", "duration", "description", "category", "isActive"],
     (fields)=>fields.optional(),
 ).or("name", "price", "duration", "description", "category", "isActive").messages({
