@@ -48,7 +48,4 @@ router.get(
   bookingController.bookingByUserId,
 );
 
-
-
-
 export default router;
