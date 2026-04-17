@@ -36,7 +36,7 @@ const createBooking = async (req, res, next) => {
       status: { $in: ["pending", "confirmed"] },
     });
 
-    console.log("service", existingBooking);
+    // console.log("service", existingBooking);`````
 
     if (existingBooking) {
       return next(
@@ -423,9 +423,9 @@ const confirmBooking = async (req, res, next) => {
 
 const availableTimeSlots = async (req, res, next) => {
 
-  const { serviceId, bookingDate } = req.query
-
   try {
+
+      const { serviceId, bookingDate } = req.query
 
     const service = await Service.findById(serviceId)
 
@@ -447,7 +447,7 @@ const availableTimeSlots = async (req, res, next) => {
 
     const bookedTimeSlots = existingBookings.map((b) => b.timeSlot)
 
-    const allTimeSlots = [
+    const TotalTimeSlots = [
       "9:00-10:00",
       "10:00-11:00",
       "11:00-12:00",
@@ -459,7 +459,7 @@ const availableTimeSlots = async (req, res, next) => {
       "17:00-18:00",
     ]
 
-    const availableTimeSlots = allTimeSlots.filter((b) => !bookedTimeSlots.includes(b))
+    const availableTimeSlots = TotalTimeSlots.filter((b) => !bookedTimeSlots.includes(b))
 
     if (!availableTimeSlots.length) {
       return res.status(200).json({
@@ -491,4 +491,5 @@ const availableTimeSlots = async (req, res, next) => {
     getBookingById,
     bookingByUserId,
     confirmBooking,
+    availableTimeSlots,
   };

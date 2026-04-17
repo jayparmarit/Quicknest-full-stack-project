@@ -22,24 +22,21 @@ router.get(
 router.get("/loginUser", auth, bookingController.bookingByUserId);
 
 
+router.get("/my/:id", auth, bookingController.getBookingById)
 
 
-router.post("/confirmBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.confirmBookingStatus);
-
-
-
-router.post("/cancelBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.cancelBookingStatus);
+// router.post("/cancelBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.cancelBookingStatus);
 
 
 
-router.post("/completeBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.completeBookingStatus);
+// router.post("/completeBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.completeBookingStatus);
 
 
-router.get("/availableTimeSlots", auth, bookingController.availableTimeSlots);
+router.get("/timeSlots", auth, bookingController.availableTimeSlots);
 
 
 
-router.get("/:id", auth, bookingController.getBookingById);
+// router.get("/:id", auth, bookingController.getBookingById);
 
 router.get(
   "/user/:id",
@@ -47,5 +44,8 @@ router.get(
   checkRole("admin", "super_admin"),
   bookingController.bookingByUserId,
 );
+
+
+router.post("/confirmBooking/:id", auth, checkRole("admin", "super_admin"), bookingController.confirmBooking);
 
 export default router;
