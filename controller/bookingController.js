@@ -242,7 +242,7 @@ const bookingByUserId = async (req, res, next) => {
   }
 };
 
-const confirmBookingStatus = async (req, res, next) => {
+const confirmBooking = async (req, res, next) => {
   try {
 
     const id = req.params.id
@@ -256,11 +256,14 @@ const confirmBookingStatus = async (req, res, next) => {
     }
 
     if (booking.status === "confirmed") {
-      return next(new HttpError("booking already confirmed", 400))
+      return res.status(400).json({success: true, message:"boking is already confirmed"})
+    }
+    if (booking.status === "completed") {
+      return res.status(400).json({success: true, message:"boking is already completed"})
     }
 
     if (booking.status === "cancelled") {
-      return next(new HttpError("booking already cancelled", 400))
+      return res.status(400).json({success: true, message:"boking is already cancelled"})
     }
 
     if (booking.status === "pending") {
@@ -273,7 +276,7 @@ const confirmBookingStatus = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "booking status updated successfully",
+      message: "booking confirmed successfully",
       booking,
     });
 
@@ -283,87 +286,87 @@ const confirmBookingStatus = async (req, res, next) => {
   }
 };
 
-const cancelBookingStatus = async (req, res, next) => {
-  try {
+// const cancelBookingStatus = async (req, res, next) => {
+//   try {
 
 
-    const id = req.params.id
+//     const id = req.params.id
 
-    const booking = await Booking.findById(id)
-    if (!booking) {
-      return next(new HttpError("no booking data found", 404));
-    }
+//     const booking = await Booking.findById(id)
+//     if (!booking) {
+//       return next(new HttpError("no booking data found", 404));
+//     }
 
-    if (booking.status === "cancelled") {
-      return next(new HttpError("booking already cancelled", 400))
-    }
-
-
-    if (booking.status === "completed") {
-
-      return next(new HttpError("booking already completed you can't cancel it", 400))
-
-    }
-
-    if (booking.status === "pending" || booking.status === "confirmed") {
-
-      booking.status = "cancelled"
-
-    }
-    await booking.save()
-
-    res.status(200).json({
-      success: true,
-      message: "booking cancelled successfully",
-      booking,
-    });
+//     if (booking.status === "cancelled") {
+//       return next(new HttpError("booking already cancelled", 400))
+//     }
 
 
-  } catch (error) {
-    next(new HttpError(error.message, 500));
-  }
-}
+//     if (booking.status === "completed") {
+
+//       return next(new HttpError("booking already completed you can't cancel it", 400))
+
+//     }
+
+//     if (booking.status === "pending" || booking.status === "confirmed") {
+
+//       booking.status = "cancelled"
+
+//     }
+//     await booking.save()
+
+//     res.status(200).json({
+//       success: true,
+//       message: "booking cancelled successfully",
+//       booking,
+//     });
 
 
-const completeBookingStatus = async (req, res, next) => {
+//   } catch (error) {
+//     next(new HttpError(error.message, 500));
+//   }
+// }
 
-  try {
 
-    const id = req.params.id
+// const completeBookingStatus = async (req, res, next) => {
 
-    const booking = await Booking.findById(id)
+//   try {
 
-    if (!booking) {
-      return next(new HttpError("no booking data found", 404));
-    }
+//     const id = req.params.id
 
-    if (booking.status === "completed") {
-      return next(new HttpError("booking already completed", 400))
-    }
+//     const booking = await Booking.findById(id)
 
-    if (booking.status === "cancelled") {
+//     if (!booking) {
+//       return next(new HttpError("no booking data found", 404));
+//     }
 
-      return next(new HttpError("booking already cancelled you can't complete it", 400))
+//     if (booking.status === "completed") {
+//       return next(new HttpError("booking already completed", 400))
+//     }
 
-    }
+//     if (booking.status === "cancelled") {
 
-    if (booking.status === "pending" || booking.status === "confirmed") {
-      booking.status = "completed"
-    }
+//       return next(new HttpError("booking already cancelled you can't complete it", 400))
 
-    await booking.save()
+//     }
 
-    res.status(200).json({
-      success: true,
-      message: "booking completed successfully",
-      booking,
-    });
+//     if (booking.status === "pending" || booking.status === "confirmed") {
+//       booking.status = "completed"
+//     }
 
-  } catch (error) {
-    next(new HttpError(error.message, 500));
-  }
+//     await booking.save()
 
-}
+//     res.status(200).json({
+//       success: true,
+//       message: "booking completed successfully",
+//       booking,
+//     });
+
+//   } catch (error) {
+//     next(new HttpError(error.message, 500));
+//   }
+
+// }
 
 
 // const availableTimeSlots = async (req, res, next) => {
@@ -461,8 +464,8 @@ const availableTimeSlots = async (req, res, next) => {
     if (!availableTimeSlots.length) {
       return res.status(200).json({
         success: true,
-        message: "no available time slots",
-        availableTimeSlots: []
+        message: "currently no time slots availabel",
+        slots: []
       })
     }
 
@@ -487,9 +490,5 @@ const availableTimeSlots = async (req, res, next) => {
     getBookingByServiceId,
     getBookingById,
     bookingByUserId,
-    confirmBookingStatus,
-    cancelBookingStatus,
-    completeBookingStatus,
-    availableTimeSlots,
-
+    confirmBooking,
   };
