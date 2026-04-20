@@ -1,4 +1,4 @@
-import Service from "../model/Services.js";
+import Service from "../model/Service.js";
 
 import HttpError from "../middleware/HttpError.js";
 import Booking from "../model/Booking.js";
