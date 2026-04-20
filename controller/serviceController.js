@@ -1,5 +1,5 @@
 import Category from "../model/Category.js";
-import Service from "../model/Services.js";
+import Service from "../model/Service.js";
 import HttpError from "../middleware/HttpError.js";
 
 
@@ -41,11 +41,11 @@ const add = async (req, res, next) => {
 
 const getAll = async (req, res, next) => {
   try {
-    const services = await Service.find().populate("category");
+    const service = await Service.find().populate("category");
     res.status(200).json({
       success: true,
       message: "all services retrieved",
-      services,
+      service,
     });
   } catch (error) {
     next(new HttpError(error.message, 500));

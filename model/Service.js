@@ -1,31 +1,32 @@
 import mongoose from "mongoose";
 
-const serviceSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    description: {
-      type: String,
-    },
-    duration: {
-      type: Number,
-      required: true,
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
+const serviceSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
   },
-  { timestamps: true },
-);
+  description: {
+    type: String,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  duration: {
+    type: Number,
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"Category",
+    required: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+});
 
 const Service = mongoose.model("Service", serviceSchema);
 
