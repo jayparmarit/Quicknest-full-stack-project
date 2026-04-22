@@ -497,8 +497,8 @@ const availableTimeSlots = async (req, res, next) => {
     getBookingByServiceId,
     getBookingById,
     bookingByUserId,
+    availableTimeSlots,
     confirmBooking,
     cancelBookingStatus,
     completeBookingStatus,
-    availableTimeSlots,
   };
