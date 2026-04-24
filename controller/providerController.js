@@ -1,5 +1,5 @@
 import User from "../model/User";
-import Service from "../model/Service";
+import Service from "../model/Service.js";
 
 import HttpError from "../middleware/HttpError.js";
 import Provider from "../model/Provider.js";

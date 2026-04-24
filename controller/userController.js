@@ -102,7 +102,28 @@ const logOutAll = async (req, res, next) => {
 
 const allUser = async (req, res, next) => {
   try {
-    const users = await User.find({});
+
+      const { role, limit, skip, sortBy } = req.query
+
+      let query = {};
+      let sortByValue = {};
+
+      if(role){
+        query.role = role
+      }
+
+      if(sortBy) {
+
+        const [ field, order] = sortBy.split(":");
+
+        sortByValue[field] = order === "desc" ? -1 : 1;
+      }
+
+      const users = await User.find(query).limit(parseInt(limit) || 5).skip(parseInt(skip) || 0).sort(sortByValue);
+
+
+
+    // const users = await User.find({});
 
     if (users.length === 0) {
       res.status(200).json({ success: true, message: "no user data found" });
@@ -110,7 +131,7 @@ const allUser = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ success: true, message: "all user data fetched", users });
+      .json({ success: true, message: "all user data fetched", length:users.length, users });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
