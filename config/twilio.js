@@ -1,4 +1,4 @@
-import twilio from "twilio";
+import twilio from "twilio"
 
 const clients = twilio(
     process.env.TWILIO_ACCOUNT_SID,
