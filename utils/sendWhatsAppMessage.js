@@ -1,4 +1,4 @@
-import clients from "../config/twilio";
+import clients from "../config/twilio.js"
 
 const sendWhatsAppMessage = async (to, body) => {
     try {
