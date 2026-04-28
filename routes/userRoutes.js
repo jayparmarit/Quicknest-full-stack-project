@@ -6,6 +6,8 @@ import validate from "../middleware/validate.js";
 import auth from "../middleware/auth.js";
 import uploads from "../middleware/upload.js";
 
+import { authLimiter } from "../middleware/rateLimits.js";
+
 import {
   createUserSchema,
 
@@ -20,9 +22,9 @@ router.post(
   userController.add,
 );
 
-router.post("/login", userController.login);
+router.post("/login",authLimiter, userController.login);
 
-router.get("/authLogin", auth, userController.authLogin);
+router.get("/authLogin",authLimiter, auth, userController.authLogin);
 
 router.post("/logOut", auth, userController.logOut);
 
