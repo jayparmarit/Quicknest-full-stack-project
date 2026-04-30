@@ -1,4 +1,4 @@
-import User from "../model/User";
+import User from "../model/User.js";
 import Service from "../model/Service.js";
 
 import HttpError from "../middleware/HttpError.js";

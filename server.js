@@ -8,6 +8,7 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import AdminRouter from "./routes/AdminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import providerRoutes from "./routes/providerRoutes.js";
 import { rateLimit  } from "express-rate-limit";
 import helmet from "helmet";
 import hpp from "hpp";
@@ -27,7 +28,9 @@ app.use("/user", userRouter);
 
 app.use("/admin", AdminRouter);
 
-app.use("/booking",bookingRoutes)
+app.use("/booking",bookingRoutes);
+
+app.use("/provider",providerRoutes);
 
 app.get("/", (req, res) => {
   res.json("hello from server start");
