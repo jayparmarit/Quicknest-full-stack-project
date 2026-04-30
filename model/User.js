@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { string } from "joi";
+// import { string } from "joi";
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     resetPasswordToken: {
-      type: string,
+      type: String,
       default:null,
     },
     resetPasswordExpiry:{
@@ -70,7 +70,7 @@ userSchema.pre("save", async function () {
 
 userSchema.statics.findByCredentials = async function (email, password) {
   try {
-    const user = await this.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       throw new Error("unable to login");
@@ -97,10 +97,7 @@ userSchema.methods.generateAuthToken = async function () {
         _id: user._id.toString(),
         role: user.role,
       },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      },
+      process.env.JWT_SECRET
     );
 
     user.tokens = user.tokens.concat({ token });

@@ -3,6 +3,7 @@ import User from "../model/User.js";
 import cloudinary from "../config/cloudinary.js";
 import sendEmail from "../utils/sendEmail.js";
 import { getWelcomeEmailTemplate } from "../services/emailTemplate.js"
+// import { use } from "react";
 
 const add = async (req, res, next) => {
   try {
@@ -24,10 +25,10 @@ const add = async (req, res, next) => {
 
     await user.save();
 
-    sendEmail({
-      to: newUser.email,
+  await  sendEmail({
+      to: user.email,
       subject: "welcome to quickNest",
-      html:getWelcomeEmailTemplate(newUser.name)
+      html:getWelcomeEmailTemplate(user.name)
     })
 
     res.status(201).json({ success: true, user });
