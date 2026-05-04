@@ -2,8 +2,10 @@ import HttpError from "../middleware/HttpError.js";
 import User from "../model/User.js";
 import cloudinary from "../config/cloudinary.js";
 import sendEmail from "../utils/sendEmail.js";
-import { getWelcomeEmailTemplate } from "../services/emailTemplate.js"
+import { getWelcomeEmailTemplate,getResetPasswordTemplate } from "../services/emailTemplate.js"
 // import { use } from "react";
+
+import crypto from "crypto"
 
 const add = async (req, res, next) => {
   try {
@@ -223,6 +225,32 @@ const deleteUser = async (req, res, next) => {
     next(new HttpError(error.message, 500));
   }
 };
+
+const forgotPassword = async(req, res, next) =>{
+
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if(!user){
+          return next(new HttpError("user not found",404));
+        }
+
+        const resetToken = crypto.randomBytes(32).toString("hex")
+
+        const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+        user.resetPasswordToken = hashedToken;
+        user.resetPasswordExpiry = Date.now() + 15 * 60 * 1000;
+
+        await user.save();
+
+        
+    } catch (error) {
+      
+    }
+}
 
 export default {
   add,
