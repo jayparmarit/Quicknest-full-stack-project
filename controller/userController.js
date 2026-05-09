@@ -310,5 +310,5 @@ export default {
   update,
   deleteUser,
   forgotPassword,
- resetPassword
+  resetPassword
 };

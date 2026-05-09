@@ -1,58 +1,95 @@
-// import HttpError from "../middleware/HttpError.js";
-// import User from "../model/User.js";
+import User from "../model/User.js";
+import Bookings from "../model/Booking.js";
+import Provider from "../model/Provider.js";
+import Service from "../model/Service.js";
 
-// const updateUserData = async (req, res, next) => {
-//   try {
-//     const id = req.params.id;
+import HttpsError from "../middleware/HttpError.js";
 
-//     const user = await User.findById(id);
+const dashBoardStatics = async (req, res, next) => {
+    try {
 
-//     if (!user) {
-//       return next(new HttpError("user not found with this id", 404));
-//     }
+        const totalUsers = await User.countDocuments();
 
-//     const updates = Object.keys(req.body);
+        const totalCustomer = await User.countDocuments({ role: "customer" });
 
-//     const allowedField = [
-//       "name",
-//       "email",
-//       "password",
-//       "phone",
-//       "role",
-//       "profilePic",
-//       "isVerified",
-//     ];
+        const totalProvider = await User.countDocuments({ role: "provider" });
 
-//     const isValid = updates.every((field) => allowedField.includes(field));
+        const totalIsApprovedProvider = await Provider.countDocuments({
+            isVerified: true,
+        })
 
-//     if (!isValid) {
-//       return next(new HttpError("only allowed field can be updated", 400));
-//     }
+        const totalIsRejectedProvider = await Provider.countDocuments({
+            isVerified: false,
+        })
 
-//     updates.forEach((update) => (user[update] = req.body[update]));
+        const totalBookings = await Bookings.countDocuments();
 
-//     await user.save();
+        const pendingBookings = await Bookings.countDocuments({
+            status: "pending"
+        })
 
-//     res
-//       .status(200)
-//       .json({ success: true, message: "user data updated successfully", user });
-//   } catch (error) {
-//     next(new HttpError(error.message, 500));
-//   }
-// };
+        const completedBookings = await Bookings.countDocuments({
+            status: "completed"
+        })
 
-// const deleteUser = async (req, res, next) => {
-//   try {
-//     const id = req.params.id;
+        const cancelledBookings = await Bookings.countDocuments({
+            status: "cancelled"
+        })
 
-//     const user = await User.findByIdAndDelete(id);
+        const confirmBookings = await Bookings.countDocuments({
+            status: "confirmed"
+        })
 
-//     res
-//       .status(200)
-//       .json({ success: true, message: "user data deleted successfully" });
-//   } catch (error) {
-//     next(new HttpError(error.message, 500));
-//   }
-// };
+        const totalServices = await Service.countDocuments();
 
-// export default { updateUserData, deleteUser };
+        const totalActiveService = await Service.countDocuments({
+            isActive: true,
+        })
+
+        const totalDeActiveService = await Service.countDocuments({
+            isActive: false,
+        })
+
+        const totalRevenue = await Bookings.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    revenue: { $sum: "$totalPrice" },
+                },
+            },
+        ]);
+
+        const totalBookingsAggregate = await Bookings.aggregate([
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 },
+                },
+            },
+        ]);
+
+        res.status(200).json({
+            success: true,
+            message: "dashboard statics fetched successfully",
+            totalUsers,
+            totalCustomer,
+            totalProvider,
+            totalIsApprovedProvider,
+            totalIsRejectedProvider,
+            totalBookings,
+            pendingBookings,
+            completedBookings,
+            cancelledBookings,
+            confirmBookings,
+            totalServices,
+            totalActiveServices,
+            totalDeActiveServices,
+            totalRevenue: totalRevenue[0]?.totalRevenue || 0,
+            totalBookingsAggregate,
+        });
+    } catch (error) {
+        next(new HttpsError(error.message, 500));
+    }
+}
+
+export default { dashBoardStatics }
