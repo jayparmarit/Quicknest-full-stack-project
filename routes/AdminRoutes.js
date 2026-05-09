@@ -16,6 +16,7 @@ import {
 import userController from "../controller/userController.js";
 import categoryController from "../controller/categoryController.js";
 import serviceController from "../controller/serviceController.js";
+import AdminController from "../controller/AdminController.js";
 
 const router = express.Router();
 
@@ -128,5 +129,9 @@ router.delete(
   checkRole("admin", "super_admin"),
   serviceController.deleteService,
 );
+
+// -----------admin dashboard statics-----
+
+router.get("/dashboardStatics",auth, checkRole("admin", "super_admin"),AdminController.dashBoardStatics,);
 
 export default router;
