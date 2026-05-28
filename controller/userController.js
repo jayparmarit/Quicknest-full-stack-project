@@ -6,6 +6,7 @@ import { getWelcomeEmailTemplate,getResetPasswordTemplate } from "../services/em
 // import { use } from "react";
 
 import crypto from "crypto"
+import auditLogger from "../utils/auditLogger.js";
 
 const add = async (req, res, next) => {
   try {
